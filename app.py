@@ -87,7 +87,6 @@ def add_entry():
             print("Product successfully updated!")
     elif confirmation.lower() != 'y':
         print("Entry not added. Now returning you to the main menu.")
-        # inventory_control()
 
 
 def view_product():
@@ -127,16 +126,11 @@ def create_backup():
             csv_writer.writerow({
                 "product_id": i.product_id,
                 "product_name": i.product_name,
-                # "product_price": int(round(float(i.product_price)))
-                # int(
-                #     round(float(i['product_price'].replace('$', '')) * 100))
                 "product_price": "${:.2f}".format(i.product_price / 100),
                 "product_quantity": i.product_quantity,
                 "date_updated": i.date_updated.strftime('%m/%d/%Y')
             })
         print("\nBackup successfully completed!")
-
-# Delete Entry Function
 
 
 def inventory_control():
