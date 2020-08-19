@@ -51,10 +51,10 @@ def csv_pull():
 
 
 def add_entry():
-    """Add a new Product to our database"""
+    """Gather the info from the user on the new product."""
     try:
         name = input("Product name: ")
-        entry_price = input("Price: $")
+        entry_price = input("Price (Format - $00.00): $")
         price = int(round(float(entry_price) * 100))
         quantity = int(input("Quantity: "))
         # date = date.datetime.today()
@@ -63,30 +63,37 @@ def add_entry():
                 "I'm afraid that is an invalid name for your product.")
     except TypeError:
         print("Oh nooz that didn't work!")
+    printed_price = str(round(price, 2) / 100)
     print(f"Product name: {name}")
-    print(f"Product price: ${entry_price}")
+    print(f"Product Price: ${printed_price}")
+    # print(f"Product price: ${entry_price}")
     print(f"Product quantity: {quantity}")
     confirmation = input(
         "Please confirm if you'd like to add this product to the inventory. y/n: \n")
     if confirmation.lower() == 'y':
-        try:
-            Product.create(
-                product_name=name,
-                product_price=price,
-                product_quantity=quantity,
-                date_updated=datetime.datetime.today()
-            )
-            print("Product successfully added!")
-        except IntegrityError:
-            inv_item = Product.get(product_name=name)
-            inv_item.product_price = int(
-                round(float(price)))
-            inv_item.product_quantity = int(quantity)
-            inv_item.date_updated = datetime.datetime.today()
-            inv_item.save()
-            print("Product successfully updated!")
+        new_entry(name, price, quantity)
     elif confirmation.lower() != 'y':
         print("Entry not added. Now returning you to the main menu.")
+
+
+def new_entry(name, price, quantity):
+    """Passes the data to the database."""
+    try:
+        Product.create(
+            product_name=name,
+            product_price=price,
+            product_quantity=quantity,
+            date_updated=datetime.datetime.today()
+        )
+        print("Product successfully added!")
+    except IntegrityError:
+        inv_item = Product.get(product_name=name)
+        inv_item.product_price = int(
+            round(float(price)))
+        inv_item.product_quantity = int(quantity)
+        inv_item.date_updated = datetime.datetime.today()
+        inv_item.save()
+        print("Product successfully updated!")
 
 
 def view_product():
@@ -155,7 +162,7 @@ def inventory_control():
 
         except ValueError:
             print(
-                "\nThat was an invalid selection. Please try again, or press 'q' to quit..")
+                "\nThat was an invalid selection. Please select from the following options, or press 'q' to quit..")
 
 
 if __name__ == '__main__':
